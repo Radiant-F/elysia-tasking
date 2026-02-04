@@ -1,0 +1,27 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1770179796086,
+      "tag": "0000_previous_nekra",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1770194787108,
+      "tag": "0001_bent_red_skull",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770199497919,
+      "tag": "0002_overjoyed_moon_knight",
+      "breakpoints": true
+    }
+  ]
+}
