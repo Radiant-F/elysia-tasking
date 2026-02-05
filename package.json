@@ -4,7 +4,7 @@
   "scripts": {
     "test": "bun test",
     "dev": "bun run --watch src/server.ts",
-    "build": "bun build src/server.ts --outdir ./dist",
+    "build": "bun build src/server.ts --outdir ./dist --target bun",
     "start": "bun run dist/server.js",
     "lint": "eslint src/",
     "typecheck": "tsc --noEmit",
