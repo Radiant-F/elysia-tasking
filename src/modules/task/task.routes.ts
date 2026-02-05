@@ -10,6 +10,7 @@ import {
   taskIdParams,
   taskListResponse,
   taskResponse,
+  updateSubtaskBody,
   updateTaskBody,
 } from "./task.schema";
 
@@ -133,7 +134,7 @@ export const taskRoutes = new Elysia({ prefix: "/tasks" })
       taskService.updateSubtask(user.id, params.id, params.subtaskId, body),
     {
       params: subtaskParams,
-      body: updateTaskBody,
+      body: updateSubtaskBody,
       response: {
         200: taskResponse,
         400: errorResponse,

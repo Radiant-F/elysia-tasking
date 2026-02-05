@@ -7,7 +7,7 @@ import { jwtPlugin } from "./jwt.plugin";
 
 export const authGuard = new Elysia({ name: "authGuard" })
   .use(jwtPlugin)
-  .derive({ as: "global" }, async ({ accessJwt, headers }) => {
+  .derive({ as: "scoped" }, async ({ accessJwt, headers }) => {
     const authorization = headers.authorization;
 
     if (!authorization?.startsWith("Bearer ")) {

@@ -34,6 +34,13 @@ describe("Task Module", () => {
 
     expect(error).toBeNull();
     expect(data?.subtasks.length).toBe(2);
+    const firstSubtask = data?.subtasks[0] as unknown as Record<
+      string,
+      unknown
+    >;
+    expect(
+      Object.prototype.hasOwnProperty.call(firstSubtask, "isImportant"),
+    ).toBe(false);
   });
 
   it("should reject more than 10 subtasks", async () => {

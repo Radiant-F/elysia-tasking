@@ -11,11 +11,23 @@ type TaskInput = {
   isCompleted?: boolean;
 };
 
+type SubtaskInput = {
+  title: string;
+  description?: string;
+  isCompleted?: boolean;
+};
+
 type TaskUpdateInput = {
   title?: string;
   description?: string;
   isImportant?: boolean;
   dueAt?: string;
+  isCompleted?: boolean;
+};
+
+type SubtaskUpdateInput = {
+  title?: string;
+  description?: string;
   isCompleted?: boolean;
 };
 
@@ -89,10 +101,26 @@ const toResponse = (task: {
   updatedAt: task.updatedAt.toISOString(),
 });
 
+const toSubtaskResponse = (task: {
+  id: string;
+  title: string;
+  description: string | null;
+  isCompleted: boolean;
+  createdAt: Date;
+  updatedAt: Date;
+}) => ({
+  id: task.id,
+  title: task.title,
+  description: task.description ?? null,
+  isCompleted: task.isCompleted,
+  createdAt: task.createdAt.toISOString(),
+  updatedAt: task.updatedAt.toISOString(),
+});
+
 export const taskService = {
   async createTask(
     userId: string,
-    input: TaskInput & { subtasks?: TaskInput[] },
+    input: TaskInput & { subtasks?: SubtaskInput[] },
   ) {
     const subtasks = input.subtasks ?? [];
     if (subtasks.length > MAX_SUBTASKS) {
@@ -114,7 +142,7 @@ export const taskService = {
         parentId: task.id,
         title: subtask.title,
         description: subtask.description ?? null,
-        isImportant: subtask.isImportant ?? false,
+        isImportant: false,
         dueAt: null,
         isCompleted: subtask.isCompleted ?? false,
       })),
@@ -122,11 +150,11 @@ export const taskService = {
 
     return {
       ...toResponse(task),
-      subtasks: createdSubtasks.map(toResponse),
+      subtasks: createdSubtasks.map(toSubtaskResponse),
     };
   },
 
-  async addSubtasks(userId: string, taskId: string, subtasks: TaskInput[]) {
+  async addSubtasks(userId: string, taskId: string, subtasks: SubtaskInput[]) {
     const task = await taskRepository.findTaskById(userId, taskId);
     if (!task || task.parentId) {
       throw new NotFoundError("Task not found");
@@ -143,7 +171,7 @@ export const taskService = {
         parentId: taskId,
         title: subtask.title,
         description: subtask.description ?? null,
-        isImportant: subtask.isImportant ?? false,
+        isImportant: false,
         dueAt: null,
         isCompleted: subtask.isCompleted ?? false,
       })),
@@ -153,7 +181,7 @@ export const taskService = {
 
     return {
       ...toResponse(task),
-      subtasks: allSubtasks.map(toResponse),
+      subtasks: allSubtasks.map(toSubtaskResponse),
     };
   },
 
@@ -197,7 +225,7 @@ export const taskService = {
     return {
       items: items.map((task) => ({
         ...toResponse(task),
-        subtasks: (subtasksByParent[task.id] ?? []).map(toResponse),
+        subtasks: (subtasksByParent[task.id] ?? []).map(toSubtaskResponse),
       })),
       nextCursor,
     };
@@ -213,7 +241,7 @@ export const taskService = {
 
     return {
       ...toResponse(task),
-      subtasks: subtasks.map(toResponse),
+      subtasks: subtasks.map(toSubtaskResponse),
     };
   },
 
@@ -235,7 +263,7 @@ export const taskService = {
 
     return {
       ...toResponse(updated),
-      subtasks: subtasks.map(toResponse),
+      subtasks: subtasks.map(toSubtaskResponse),
     };
   },
 
@@ -243,7 +271,7 @@ export const taskService = {
     userId: string,
     taskId: string,
     subtaskId: string,
-    input: TaskUpdateInput,
+    input: SubtaskUpdateInput,
   ) {
     const parent = await taskRepository.findTaskById(userId, taskId);
     if (!parent || parent.parentId) {
@@ -258,8 +286,6 @@ export const taskService = {
     const updated = await taskRepository.updateTask(userId, subtaskId, {
       title: input.title,
       description: input.description ?? null,
-      isImportant: input.isImportant,
-      dueAt: null,
       isCompleted: input.isCompleted,
     });
 

@@ -21,7 +21,6 @@ export const subtaskInput = t.Object({
       examples: ["Write the first draft"],
     }),
   ),
-  isImportant: t.Optional(t.Boolean({ examples: [false] })),
   isCompleted: t.Optional(t.Boolean({ examples: [false] })),
 });
 
@@ -65,6 +64,26 @@ export const updateTaskBody = t.Object(
   { minProperties: 1 },
 );
 
+export const updateSubtaskBody = t.Object(
+  {
+    title: t.Optional(
+      t.String({
+        minLength: 1,
+        maxLength: 200,
+        examples: ["Draft proposal v2"],
+      }),
+    ),
+    description: t.Optional(
+      t.String({
+        maxLength: 2000,
+        examples: ["Add more details"],
+      }),
+    ),
+    isCompleted: t.Optional(t.Boolean({ examples: [false] })),
+  },
+  { minProperties: 1 },
+);
+
 export const addSubtasksBody = t.Object({
   subtasks: t.Array(subtaskInput, { minItems: 1, maxItems: 10 }),
 });
@@ -83,7 +102,6 @@ export const taskResponse = t.Object({
       id: t.String({ examples: ["550e8400-e29b-41d4-a716-446655440000"] }),
       title: t.String({ examples: ["Draft proposal"] }),
       description: t.Union([t.String(), t.Null()]),
-      isImportant: t.Boolean({ examples: [false] }),
       isCompleted: t.Boolean({ examples: [false] }),
       createdAt: dateTime,
       updatedAt: dateTime,
