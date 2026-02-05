@@ -4,6 +4,17 @@ import { authRoutes } from "./modules/auth/auth.routes";
 import { taskRoutes } from "./modules/task/task.routes";
 import { userRoutes } from "./modules/user/user.routes";
 import { errorHandler } from "./plugins/error-handler";
+import { cors } from "@elysiajs/cors";
+import { env } from "./lib/env";
+
+const allowedOrigins = env.ALLOWED_CORS_ORIGINS.split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
+
+const corsOrigin =
+  allowedOrigins.length === 0 || allowedOrigins.includes("*")
+    ? true
+    : allowedOrigins;
 
 export const app = new Elysia()
   .use(
@@ -31,6 +42,12 @@ export const app = new Elysia()
           },
         },
       },
+    }),
+  )
+  .use(
+    cors({
+      origin: corsOrigin,
+      credentials: true,
     }),
   )
   .use(errorHandler)

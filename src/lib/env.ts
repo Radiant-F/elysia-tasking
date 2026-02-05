@@ -16,6 +16,7 @@ export const env = {
     "REMEMBER_ME_REFRESH_EXPIRES_IN",
     "30d",
   ),
+  ALLOWED_CORS_ORIGINS: getEnvVar("ALLOWED_CORS_ORIGINS", ""),
   PORT: parseInt(getEnvVar("PORT", "3000"), 10),
   NODE_ENV: getEnvVar("NODE_ENV", "development"),
 } as const;
